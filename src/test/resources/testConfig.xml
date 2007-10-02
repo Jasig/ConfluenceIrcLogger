@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logBotConfig>
+    <nick>
+        <name>JASIGLogBot</name>
+        <password>irclog4jasig@uw</password>
+    </nick>
+    <ircServer>
+        <host>irc.freenode.net</host>
+        <port>6667</port>
+        <!--<password>irclog4jasig@uw</password>-->
+    </ircServer>
+    <channelLoggers>
+        <channelLogger>
+            <ircChannel>##uportal-test</ircChannel>
+            <notification>This channel is being logged to: http://www.ja-sig.org/wiki/display/UPC/uportal+IRC+Logs</notification>
+            <confluenceServer>
+                <endpoint>http://www.ja-sig.org/wiki/rpc/xmlrpc</endpoint>
+                <userName>irclogbot</userName>
+                <password>irclog4jasig@uw</password>
+            </confluenceServer>
+            <spaceKey>SND</spaceKey>
+            <logPagesTitleFormats>
+                <string>'uPortal IRC Logs TEST'</string>
+                <string>'uPortal IRC Logs-'yyyy</string>
+                <string>'uPortal IRC Logs-'yyyy-MM</string>
+                <string>'uPortal IRC Logs-'yyyy-MM-dd</string>
+            </logPagesTitleFormats>
+        </channelLogger>
+        <channelLogger>
+            <ircChannel>##fluid-test</ircChannel>
+            <notification>This channel is being logged to: http://www.fluid.org/wiki/display/UPC/uportal+IRC+Logs</notification>
+            <confluenceServer>
+                <endpoint>http://www.ja-sig.org/wiki/rpc/xmlrpc</endpoint>
+                <userName>irclogbot</userName>
+                <password>irclog4jasig@uw</password>
+            </confluenceServer>
+            <spaceKey>SND</spaceKey>
+            <logPagesTitleFormats>
+                <string>'Fluid IRC Logs TEST'</string>
+                <string>'Fluid IRC Logs-'yyyy</string>
+                <string>'Fluid IRC Logs-'yyyy-MM</string>
+                <string>'Fluid IRC Logs-'yyyy-MM-dd</string>
+            </logPagesTitleFormats>
+        </channelLogger>
+    </channelLoggers>
+</logBotConfig>
