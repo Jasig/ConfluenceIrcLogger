@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
+
     <parent>
         <groupId>org.jasig</groupId>
         <artifactId>jasig-parent</artifactId>
@@ -13,11 +13,11 @@
     <artifactId>ConfluenceIrcLogger</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-RC3</version>
-    
+
     <name>Confluence IRC Logger</name>
     <description>Logs IRC conversations into Confluence.</description>
     <url>http://developer.ja-sig.org/projects/ConfluenceIrcLogger/</url>
-    
+
     <issueManagement>
         <url>http://www.ja-sig.org/issues/browse/CFIRCL</url>
         <system>Jira</system>
@@ -25,7 +25,9 @@
 
     <scm>
         <url>https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/trunk/</url>
-        <developerConnection>scm:svn:https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/trunk/</developerConnection>
+        <developerConnection>
+            scm:svn:https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/trunk/
+        </developerConnection>
         <connection>scm:svn:https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/trunk/</connection>
         <tag>1.0.0-RC3</tag>
     </scm>
@@ -42,7 +44,7 @@
             <url>http://repository.codehaus.org/</url>
         </repository>
     </repositories>
-    
+
     <developers>
         <developer>
             <name>Eric Dalquist</name>
@@ -57,13 +59,12 @@
             <timezone>-6</timezone>
         </developer>
     </developers>
-    <contributors>
-    </contributors>
-    
+    <contributors></contributors>
+
     <dependencies>
         <!--
-         | Run Time Dependencies
-         +-->
+            | Run Time Dependencies
+            +-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -89,7 +90,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
@@ -97,7 +98,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -105,7 +106,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.codehaus.swizzle</groupId>
             <artifactId>swizzle-confluence</artifactId>
@@ -113,7 +114,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -121,7 +122,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>pircbot</groupId>
             <artifactId>pircbot</artifactId>
@@ -137,11 +138,11 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        
-        
+
+
         <!--
-         | Runtime Dependencies
-         +-->
+            | Runtime Dependencies
+            +-->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -167,11 +168,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        
+
+
         <!--
-         | Test Dependencies
-         +-->
+            | Test Dependencies
+            +-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -203,10 +204,29 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <mainClass>org.jasig.irclog.BotRunner</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
+                    <!-- 
+                        <descriptorRefs>
+                        <descriptorRef>bin</descriptorRef>
+                        </descriptorRefs>
+                    -->
                     <descriptors>
-                        <descriptor>assembly.xml</descriptor>
+                        <descriptor>src/main/assembly/binaryDistribution.xml</descriptor>
                     </descriptors>
                 </configuration>
             </plugin>
