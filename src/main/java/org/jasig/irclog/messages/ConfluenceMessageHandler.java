@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.messages;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ public class ConfluenceMessageHandler implements MessageHandler {
     private ConfluenceServer confluenceServer;
     private String spaceKey;
     private List<SimpleDateFormat> logPagesTitleFormats;
+    private String childPageLinkFormat = "'{'children:depth=1'}'";
     
     public ConfluenceMessageHandler() {
         this.messageEscapePairs = new HashMap<String, String>();
@@ -74,6 +76,25 @@ public class ConfluenceMessageHandler implements MessageHandler {
     public void setSpaceKey(String spaceKey) {
         this.spaceKey = spaceKey;
     }
+    /**
+     * @return the childPageLinkFormat
+     */
+    public String getChildPageLinkFormat() {
+        return childPageLinkFormat;
+    }
+
+    /**
+     * A MessageFormat compatible string. Three arguments are passed to the formatter
+     * {0} = Date (time of formatting)
+     * {1} = Parent page title
+     * {2} = Child page title
+     * 
+     * @param childPageLinkFormat the childPageLinkFormat to set
+     */
+    public void setChildPageLinkFormat(String childPageLinkFormat) {
+        this.childPageLinkFormat = childPageLinkFormat;
+    }
+
     /**
      * @return the logPagesTitleFormats
      */
@@ -219,8 +240,15 @@ public class ConfluenceMessageHandler implements MessageHandler {
             contentBuilder = new StringBuilder(content);
         }
         
-        //TODO move this string into a message bundle
-        contentBuilder.append("[").append(pageName).append("]\n");
+        //Date, parent name, child name
+        
+        if (this.childPageLinkFormat != null) {
+            final String childLink = MessageFormat.format(this.childPageLinkFormat, new Date(), parent.getTitle(), pageName);
+            
+            if (contentBuilder.indexOf(childLink) < 0) {
+                contentBuilder.append(childLink);
+            }
+        }
         
         parent.setContent(contentBuilder.toString());
         
