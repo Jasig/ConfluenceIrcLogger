@@ -248,10 +248,10 @@ public class ConfluenceMessageHandler implements MessageHandler {
             if (contentBuilder.indexOf(childLink) < 0) {
                 contentBuilder.append(childLink);
             }
+            
+            parent.setContent(contentBuilder.toString());
+            
+            confluence.storePage(parent);
         }
-        
-        parent.setContent(contentBuilder.toString());
-        
-        confluence.storePage(parent);
     }
 }
