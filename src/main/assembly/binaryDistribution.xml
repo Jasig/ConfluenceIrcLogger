@@ -5,13 +5,23 @@
         <format>tar.bz2</format>
         <format>zip</format>
     </formats>
+    <files>
+        <!-- doing this file-by-file for filtering to work :( -->
+        <file>
+            <source>src/main/assembly/resources/scripts/logbot.sh</source>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>755</fileMode>
+            <filtered>true</filtered>
+        </file>
+    </files>
     <fileSets>
         <fileSet>
+            <directory>src/main/assembly/resources/configs</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
             <directory>target</directory>
-            <outputDirectory></outputDirectory>
-            <excludes>
-                <exclude>*-sources.jar</exclude>
-            </excludes>
+            <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>*.jar</include>
             </includes>
@@ -19,7 +29,7 @@
     </fileSets>
     <dependencySets>
         <dependencySet>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>lib</outputDirectory>
             <scope>runtime</scope>
         </dependencySet>
     </dependencySets>

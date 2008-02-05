@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logBotConfig>
+    <nick>
+        <name>ConfluenceLogBot</name>
+        <password>NickServ Server Password</password>
+    </nick>
+    <ircServer>
+        <host>irc.server.net</host>
+        <port>6667</port>
+        <password>IRC Server Password</password>
+    </ircServer>
+    <channelLoggers>
+        <!--
+         | Any number of channelLogger sections can be defined.
+         +-->
+        <channelLogger>
+            <ircChannel>#channel-to-log</ircChannel>
+            <notification>#channel-to-log is being logged to: http://confluence.host.com/display/SPACE/IRC+Logs</notification>
+            <confluenceServer>
+                <endpoint>http://confluence.host.com/rpc/xmlrpc</endpoint>
+                <userName>confluenceUserName</userName>
+                <password>confluencePassword</password>
+            </confluenceServer>
+            <spaceKey>SPACE</spaceKey>
+            <!--
+             | A tree of pages is created using the titles listed below. Each parent will list all child pages. Any
+             | valid SimpleDateFormat string is accepted and when messages are logged the page title strings are
+             | evaluated and missing pages are created as needed.
+             +-->
+            <logPagesTitleFormats>
+                <string>'IRC Logs'</string>
+                <string>'IRC Logs-'yyyy</string>
+                <string>'IRC Logs-'yyyy-MM</string>
+                <string>'IRC Logs-'yyyy-MM-dd</string>
+            </logPagesTitleFormats>
+        </channelLogger>
+    </channelLoggers>
+</logBotConfig>
