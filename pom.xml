@@ -10,7 +10,7 @@
     <groupId>org.jasig</groupId>
     <artifactId>ConfluenceIrcLogger</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 
     <name>Confluence IRC Logger</name>
     <description>Logs IRC conversations into Confluence.</description>
@@ -22,9 +22,9 @@
     </issueManagement>
 
     <scm>
-        <url>https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger</url>
-        <developerConnection>scm:svn:https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger</developerConnection>
-        <connection>scm:svn:https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger</connection>
+        <url>https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger/tags/rel-1.1.0</url>
+        <developerConnection>scm:svn:https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger/tags/rel-1.1.0</developerConnection>
+        <connection>scm:svn:https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger/tags/rel-1.1.0</connection>
     </scm>
 
     <repositories>
