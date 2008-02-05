@@ -22,10 +22,9 @@
     </issueManagement>
 
     <scm>
-        <url>https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/tags/rel-1.1.0</url>
-        <developerConnection>scm:svn:https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/tags/rel-1.1.0</developerConnection>
-        <connection>scm:svn:https://svn.atlassian.com/svn/public/contrib/confluence/ircbot/tags/rel-1.1.0</connection>
-        <tag>1.0.0-RC3</tag>
+        <url>https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger</url>
+        <developerConnection>scm:svn:https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger</developerConnection>
+        <connection>scm:svn:https://www.ja-sig.org/svn/contrib/ConfluenceIrcLogger</connection>
     </scm>
 
     <repositories>
