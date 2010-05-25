@@ -64,8 +64,6 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>logkit</groupId>
@@ -85,53 +83,53 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.shutdown-listener</groupId>
+            <artifactId>shutdown-listener</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
             <version>1.2.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.7.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.codehaus.swizzle</groupId>
             <artifactId>swizzle-confluence</artifactId>
             <version>1.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jcl</artifactId>
+            <version>1.6.0</version>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.3</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>pircbot</groupId>
             <artifactId>pircbot</artifactId>
             <version>1.4.6</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>1.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
 
@@ -142,7 +140,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.15</version>
-            <type>jar</type>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -163,8 +160,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
+        
         <!--
             | Test Dependencies
             +-->
@@ -172,7 +168,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.2</version>
-            <type>jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>

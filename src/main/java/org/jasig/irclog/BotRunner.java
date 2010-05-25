@@ -40,6 +40,8 @@ import org.jasig.irclog.messages.LoggingMessageHandler;
 import org.jasig.irclog.messages.XmlEscapingMessageHandler;
 import org.jasig.irclog.messages.support.MessageHandlerFlusher;
 
+import com.googlecode.shutdownlistener.ShutdownHandler;
+import com.googlecode.shutdownlistener.ShutdownListener;
 import com.thoughtworks.xstream.XStream;
 
 /**
@@ -54,7 +56,7 @@ public class BotRunner {
      * @param args
      * @throws IOException 
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         final LogBotConfig botConfig = loadConfig(args);
         if (botConfig == null) {
             return;
@@ -67,6 +69,7 @@ public class BotRunner {
         final String port = ircServer.getPort();
         final String password = ircServer.getPassword();
 
+        final ShutdownHandler shutdownHandler;
         try {
             if (port != null && password != null) {
                 bot.connect(host, Integer.parseInt(port), password);
@@ -80,10 +83,23 @@ public class BotRunner {
             else {
                 bot.connect(host);
             }
+            
+            shutdownHandler = new ShutdownHandler(); 
+            shutdownHandler.registerShutdownListener(new ShutdownListener() {
+                public void shutdown() {
+                    bot.disconnect();
+                    bot.dispose();
+                }
+            });
+            
+            shutdownHandler.start();
         }
         catch (Exception e) {
             LOG.error(bot + " failed with following exception.", e);
+            throw e;
         }
+        
+        shutdownHandler.waitForShutdown();
     }
 
     /**
@@ -138,16 +154,15 @@ public class BotRunner {
             confluenceMessageHandler.setConfluenceServer(channelLogger.getConfluenceServer());
             confluenceMessageHandler.setLogPagesTitleFormats(channelLogger.getLogPagesTitleFormats());
             confluenceMessageHandler.setSpaceKey(channelLogger.getSpaceKey());
-//            confluenceMessageHandler.setMessageEscapePairs(messageEscapePairs); TODO config this
             
             //Configure message buffering to avoid too-frequent Confluence updates
             final BufferingMessageHandler bufferingMessageHandler = new BufferingMessageHandler();
-            bufferingMessageHandler.setMessageBufferSize(64); //TODO config this
+            bufferingMessageHandler.setMessageBufferSize(channelLogger.getBufferSize());
             bufferingMessageHandler.setMessageHandler(confluenceMessageHandler);
             
             //Configure Timer to flush the buffer periodically 
             final MessageHandlerFlusher messageHandlerFlusher = new MessageHandlerFlusher();
-            messageHandlerFlusher.setPeriod(5 * 60); //TODO config this
+            messageHandlerFlusher.setPeriod(channelLogger.getFlushPeriod());
             messageHandlerFlusher.setMessageHandler(bufferingMessageHandler);
             
             //XML Escape messages before buffering

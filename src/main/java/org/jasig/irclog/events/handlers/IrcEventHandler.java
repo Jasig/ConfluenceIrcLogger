@@ -13,4 +13,6 @@ import org.jasig.irclog.events.IrcEvent;
  */
 public interface IrcEventHandler {
     public void handleEvent(IrcEvent event);
+    
+    public void dispose();
 }

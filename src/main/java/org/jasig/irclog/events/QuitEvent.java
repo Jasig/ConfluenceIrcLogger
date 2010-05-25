@@ -18,8 +18,8 @@ import org.jibble.pircbot.PircBot;
  * @author Eric Dalquist <a href="mailto:eric.dalquist@doit.wisc.edu">eric.dalquist@doit.wisc.edu</a>
  * @version $Revision$
  */
-public class QuitEvent extends IrcEvent {
-    private static final List<String> PROPERTIES = Collections.unmodifiableList(Arrays.asList(new String[] { "sourceNick", "sourceLogin", "sourceHostname", "reason" }));
+public class QuitEvent extends TargetedEvent {
+    private static final List<String> PROPERTIES = Collections.unmodifiableList(Arrays.asList(new String[] { "sourceLogin", "sourceHostname", "reason" }));
     
     protected final String sourceNick;
     protected final String sourceLogin;
@@ -27,7 +27,7 @@ public class QuitEvent extends IrcEvent {
     protected final String reason;
     
     public QuitEvent(final PircBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String reason) {
-        super(source);
+        super(source, sourceNick);
         this.sourceNick = sourceNick;
         this.sourceLogin = sourceLogin;
         this.sourceHostname = sourceHostname;
@@ -67,12 +67,5 @@ public class QuitEvent extends IrcEvent {
      */
     public String getSourceLogin() {
         return this.sourceLogin;
-    }
-
-    /**
-     * @return the sourceNick
-     */
-    public String getSourceNick() {
-        return this.sourceNick;
     }
 }

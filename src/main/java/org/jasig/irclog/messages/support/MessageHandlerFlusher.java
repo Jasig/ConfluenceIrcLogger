@@ -37,9 +37,12 @@ public class MessageHandlerFlusher {
         return (int)(this.period / 1000);
     }
     /**
-     * @param period the period to set
+     * @param period the period to set in seconds
      */
     public synchronized void setPeriod(int period) {
+        if (period <= 0) {
+            period = 60;
+        }
         this.period = period * 1000;
         
         if (this.flushTask != null) {

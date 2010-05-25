@@ -55,6 +55,9 @@ public class ChannelNotifier implements IrcEventHandler {
     public void addOnJoinMessage(String channel, String message) {
         this.onJoinMessages.put(channel, message);
     }
+    
+    public void dispose() {
+    }
 
     /**
      * @see org.jasig.irclog.events.handlers.IrcEventHandler#handleEvent(org.jasig.irclog.events.IrcEvent)

@@ -23,6 +23,8 @@ public class ChannelLogger {
     private ConfluenceServer confluenceServer;
     private String spaceKey;
     private List<String> logPagesTitleFormats;
+    private int flushPeriod = 1 * 60;
+    private int bufferSize = 64;
     
     /**
      * @return the ircChannel
@@ -84,7 +86,18 @@ public class ChannelLogger {
     public void setLogPagesTitleFormats(List<String> logPagesTitleFormats) {
         this.logPagesTitleFormats = logPagesTitleFormats;
     }
-    
+    public int getFlushPeriod() {
+        return flushPeriod;
+    }
+    public void setFlushPeriod(int flushPeriod) {
+        this.flushPeriod = flushPeriod;
+    }
+    public int getBufferSize() {
+        return bufferSize;
+    }
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
     /**
      * @see java.lang.Object#toString()
      */
@@ -95,6 +108,8 @@ public class ChannelLogger {
             .append("notification", this.notification)
             .append("confluenceServer", this.confluenceServer)
             .append("spaceKey", this.spaceKey)
+            .append("flushPeriod", this.flushPeriod)
+            .append("bufferSize", this.bufferSize)
             .append("logPagesTitleFormats", this.logPagesTitleFormats)
             .toString();
     }
@@ -107,6 +122,8 @@ public class ChannelLogger {
         .append(this.logPagesTitleFormats)
         .append(this.notification)
         .append(this.spaceKey)
+        .append(this.flushPeriod)
+        .append(this.bufferSize)
         .append(this.ircChannel)
         .append(this.confluenceServer)
         .toHashCode();
@@ -127,6 +144,8 @@ public class ChannelLogger {
             .append(this.logPagesTitleFormats, rhs.logPagesTitleFormats)
             .append(this.notification, rhs.notification)
             .append(this.spaceKey, rhs.spaceKey)
+            .append(this.flushPeriod, rhs.flushPeriod)
+            .append(this.bufferSize, rhs.bufferSize)
             .append(this.ircChannel, rhs.ircChannel)
             .append(this.confluenceServer, rhs.confluenceServer)
             .isEquals();

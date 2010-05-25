@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <logBotConfig>
     <nick>
-        <name>JASIGLogBottest</name>
+        <name>JASIGLogBotTest</name>
         <password>irclog4jasig@uw</password>
     </nick>
     <ircServer>
@@ -11,21 +11,21 @@
     <channelLoggers>
         <channelLogger>
             <ircChannel>##uportal-test</ircChannel>
-            <notification>##uportal is being logged to: http://www.ja-sig.org/wiki/display/UPC/uportal+IRC+Logs</notification>
+            <notification>##uportal is being logged to: https://wiki.jasig.org/display/UPC/uportal+IRC+Logs</notification>
             <confluenceServer>
-                <endpoint>http://www.ja-sig.org/wiki/rpc/xmlrpc</endpoint>
+                <endpoint>https://wiki.jasig.org/rpc/xmlrpc</endpoint>
                 <userName>irclogbot</userName>
                 <password>irclog4jasig@uw</password>
             </confluenceServer>
             <spaceKey>SND</spaceKey>
             <logPagesTitleFormats>
-                <string>'uportal IRC Logs'</string>
-                <string>'uPortal IRC Logs-'yyyy</string>
-                <string>'uPortal IRC Logs-'yyyy-MM</string>
-                <string>'uPortal IRC Logs-'yyyy-MM-dd</string>
+                <string>'uPortal TEST IRC Logs'</string>
+                <string>'uPortal TEST IRC Logs-'yyyy</string>
+                <string>'uPortal TEST IRC Logs-'yyyy-MM</string>
+                <string>'uPortal TEST IRC Logs-'yyyy-MM-dd</string>
             </logPagesTitleFormats>
         </channelLogger>
-        <!-- Commented out until Fluid decides if they will use the bot
+        <!-- 
         <channelLogger>
             <ircChannel>#fluid-work</ircChannel>
             <notification>#fluid-work is being logged to: http://wiki.fluidproject.org/display/fluid/Fluid+IRC+Logs</notification>

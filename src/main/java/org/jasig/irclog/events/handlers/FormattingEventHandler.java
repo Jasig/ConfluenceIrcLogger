@@ -51,7 +51,9 @@ public class FormattingEventHandler implements IrcEventHandler {
         this.messageHandler = messageHandler;
     }
 
-    
+    public void dispose() {
+        this.messageHandler.flush();
+    }
     
     /**
      * Format arguments are:

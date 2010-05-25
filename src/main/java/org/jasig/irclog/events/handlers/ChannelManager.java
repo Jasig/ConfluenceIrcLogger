@@ -15,6 +15,8 @@ import org.jasig.irclog.events.ConnectEvent;
 import org.jasig.irclog.events.DisconnectEvent;
 import org.jasig.irclog.events.IrcEvent;
 import org.jasig.irclog.events.KickEvent;
+import org.jasig.irclog.events.QuitEvent;
+import org.jasig.irclog.events.TargetedEvent;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -26,6 +28,7 @@ public class ChannelManager implements IrcEventHandler {
     
     private Set<String> channels = new HashSet<String>(0);
     private long reconnectDelay = 1000;
+    private volatile boolean quit = false;
     
     /**
      * @return the channels
@@ -61,6 +64,9 @@ public class ChannelManager implements IrcEventHandler {
     }
 
 
+    public void dispose() {
+    }
+    
     /**
      * @see org.jasig.irclog.events.handlers.IrcEventHandler#handleEvent(org.jasig.irclog.events.IrcEvent)
      */
@@ -74,8 +80,16 @@ public class ChannelManager implements IrcEventHandler {
                 bot.joinChannel(channel);
             }
         }
+        else if (event instanceof QuitEvent) {
+            final TargetedEvent targetedEvent = (TargetedEvent)event;
+            final String target = targetedEvent.getTarget();
+            if (bot.getNick().equals(target) || bot.getName().equals(target)) {
+                this.logger.info("Quit server, will not attempt to reconnect.");
+                this.quit = true;
+            }
+        }
         //Rejoin the server when disconnected
-        else if (event instanceof DisconnectEvent) {
+        else if (!this.quit && event instanceof DisconnectEvent) {
             this.logger.info("Disconnected from server.");
             
             while (!bot.isConnected()) {

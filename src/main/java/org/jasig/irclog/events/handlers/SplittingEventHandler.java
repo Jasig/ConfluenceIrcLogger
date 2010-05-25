@@ -57,6 +57,11 @@ public class SplittingEventHandler implements IrcEventHandler {
         this.recoverExceptions = recoverExceptions;
     }
     
+    public void dispose() {
+        for (final IrcEventHandler handler : this.handlers) {
+            handler.dispose();
+        }
+    }
     
     /**
      * @see org.jasig.irclog.events.handlers.IrcEventHandler#handleEvent(org.jasig.irclog.events.IrcEvent)

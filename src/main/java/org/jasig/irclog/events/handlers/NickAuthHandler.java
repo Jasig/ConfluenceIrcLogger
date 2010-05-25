@@ -41,7 +41,9 @@ public class NickAuthHandler implements IrcEventHandler {
         this.passwords.put(nick, password);
     }
 
-
+    public void dispose() {
+    }
+    
     /* (non-Javadoc)
      * @see org.jasig.irclog.events.handlers.IrcEventHandler#handleEvent(org.jasig.irclog.events.IrcEvent)
      */

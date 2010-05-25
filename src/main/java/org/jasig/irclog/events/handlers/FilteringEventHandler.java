@@ -54,6 +54,9 @@ public class FilteringEventHandler implements IrcEventHandler {
         this.targetHandler = targetHandler;
     }
 
+    public void dispose() {
+        this.targetHandler.dispose();
+    }
 
     /**
      * @see org.jasig.irclog.events.handlers.IrcEventHandler#handleEvent(org.jasig.irclog.events.IrcEvent)

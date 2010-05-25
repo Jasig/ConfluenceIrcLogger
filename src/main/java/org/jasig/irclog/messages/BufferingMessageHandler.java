@@ -29,6 +29,10 @@ public class BufferingMessageHandler extends MessageHandlerWrapper {
      * @param messageBufferSize the messageBufferSize to set
      */
     public void setMessageBufferSize(int messageBufferSize) {
+        if (messageBufferSize <= 0) {
+            messageBufferSize = 64;
+        }
+        
         this.messageBufferSize = messageBufferSize;
         this.messages.ensureCapacity(messageBufferSize);
     }

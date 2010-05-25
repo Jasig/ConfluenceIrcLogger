@@ -70,8 +70,13 @@ public class EventLogBot extends PircBot {
     public void setBotName(String name) {
         this.setName(name);
     }
-
     
+    
+    @Override
+    public synchronized void dispose() {
+        this.eventHandler.dispose();
+        super.dispose();
+    }
     /**
      * @see org.jibble.pircbot.PircBot#onConnect()
      */
