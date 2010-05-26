@@ -2,7 +2,7 @@
 <logBotConfig>
     <nick>
         <name>JASIGLogBotTest</name>
-        <password>irclog4jasig@uw</password>
+        <password></password>
     </nick>
     <ircServer>
         <host>irc.freenode.net</host>
