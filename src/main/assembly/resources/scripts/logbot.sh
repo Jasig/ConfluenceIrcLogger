@@ -1,34 +1,94 @@
-#!/bin/sh
+#!/bin/bash
 
+## CHANGE THESE AS NEEDED FOR YOUR APPLICATION 
+APP_BASE=`dirname $0`
+APP_LIB=$APP_BASE/lib
+APP_CONF=$APP_BASE/config
+APP_CLASS=org.jasig.irclog.BotRunner
+APP_OPTS="-c $APP_CONF/botConfig.xml"
+
+CMD_STOP_AND_WAIT=SHUTDOWN_AND_WAIT
+CMD_STOP_NO_WAIT=SHUTDOWN_NO_WAIT
+CMD_STATUS=STATUS
+
+
+
+
+
+# Check for exactly 1 argument
 if [ $# -ne 1 ]; then
-         echo 1>&2 "Usage: $0 {start|stop}"
-         exit 127
+    echo "Usage: $0 {start|restart|stop|stop-nowait|status}" >&2
+    exit 127
 fi
 
-# Include jasigadm settings
-. /jasig/etc/bashrc
+ACTION=$1
 
-BOT_BASE=`dirname $0`
-BOT_PID="$BOT_BASE/bot.pid"
-LOG_DIR="$BOT_BASE"
+# Validate Configuration
+if [ ! -d $JAVA_HOME ]
+then
+    echo "JAVA_HOME Directory '$JAVA_HOME' does not exist" >&2
+    exit 127
+fi
 
-mkdir -p $LOG_DIR
+cd $APP_BASE
 
-case "$1" in
+APP_CLASSPATH=$APP_CONF
+for jarFile in $(ls $APP_LIB/*.jar); do
+    APP_CLASSPATH=${APP_CLASSPATH}:$jarFile
+done
+
+APP_START="$JAVA_HOME/bin/java -cp $APP_CLASSPATH $APP_CLASS $APP_OPTS"
+APP_STOP="$JAVA_HOME/bin/java -cp $APP_CLASSPATH com.googlecode.shutdownlistener.ShutdownUtility"
+
+function start {
+    echo "Starting Application ..."
+    nohup $APP_START &
+    echo "Started Application in background"
+}
+function stop {
+    echo "Stopping Application ..."
+    $APP_STOP $CMD_STOP_AND_WAIT
+    APP_STATS=$?
+    
+    if [ $APP_STATS -eq 1 ]
+    then
+        echo "Application was not running or failed to stop"
+    else
+        echo "Application stopped"
+    fi
+}
+function stopNowait {
+    echo "Stopping Application ..."
+    $APP_STOP $CMD_STOP_NO_WAIT
+}
+
+case "$ACTION" in
 start)
-        echo "Starting JA-SIG Log Bot..."
-        cd $BOT_BASE
-        "$JAVA_HOME"/bin/java -Dservice=ircbot -jar ConfluenceIrcLogger-1.0.0-RC3/ConfluenceIrcLogger-1.0.0-RC3.jar -c botConfig.xml >> "$LOG_DIR"/IRCLogBot.out 2>&1 &
-        echo $! > $BOT_PID
-        ;;
+    start
+    ;;
 
 stop)
-        echo "Stopping JA-SIG Log Bot..."
-        PID=`cat $BOT_PID`
-        kill $PID
-        rm $BOT_PID
-        ;;
+    stop
+    ;;
+
+status)
+    $APP_STOP $CMD_STATUS
+    APP_STATS=$?
+    if [ $APP_STATS -eq 1 ]
+    then
+        echo "Application is not running"
+    fi
+    
+    ;;
+
+restart)
+    stop
+
+    start
+    ;;
+
+stop-nowait)
+    stopNowait
+    ;;
 
 esac
-
-exit 0

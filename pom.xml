@@ -200,8 +200,6 @@
                         <manifest>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <mainClass>org.jasig.irclog.BotRunner</mainClass>
-                            <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
                 </configuration>

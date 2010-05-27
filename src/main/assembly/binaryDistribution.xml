@@ -16,15 +16,8 @@
     </files>
     <fileSets>
         <fileSet>
-            <directory>src/main/assembly/resources/configs</directory>
-            <outputDirectory>/</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>target</directory>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
+            <directory>src/main/assembly/resources/config</directory>
+            <outputDirectory>/config</outputDirectory>
         </fileSet>
     </fileSets>
     <dependencySets>
