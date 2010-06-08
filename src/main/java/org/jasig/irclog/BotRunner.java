@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
@@ -217,9 +218,10 @@ public class BotRunner {
         configFileOpt.setArgs(1);
         options.addOption(configFileOpt);
 
+        final CommandLine cmd;
         try {
             final CommandLineParser parser = new PosixParser();
-            parser.parse(options, args);
+            cmd = parser.parse(options, args);
         }
         catch (ParseException e) {
             final HelpFormatter formatter = new HelpFormatter();
@@ -227,7 +229,7 @@ public class BotRunner {
             return null;
         }
 
-        final String configFilePath = configFileOpt.getValue();
+        final String configFilePath = cmd.getOptionValue(configFileOpt.getOpt());
         final FileInputStream configInputStream = new FileInputStream(configFilePath);
 
         final XStream xstream = getConfigParser();
