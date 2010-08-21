@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -19,7 +20,12 @@ public class ConnectEvent extends IrcEvent {
     /**
      * @param date
      */
-    public ConnectEvent(final PircBot source) {
+    public ConnectEvent(final IrcBot source) {
         super(source);
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectEvent [ircbot=" + this.source + "date=" + this.date + "]";
     }
 }

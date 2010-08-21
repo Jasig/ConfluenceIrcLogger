@@ -5,7 +5,7 @@
 
 package org.jasig.irclog.events;
 
-import org.jibble.pircbot.PircBot;
+import org.jasig.irclog.IrcBot;
 
 /**
  * Base class for all Channel related events
@@ -18,7 +18,7 @@ public abstract class ChannelEvent extends IrcEvent {
     
     protected final String channel;
     
-    public ChannelEvent(final PircBot source, final String channel) {
+    public ChannelEvent(final IrcBot source, final String channel) {
         super(source);
         this.channel = channel;
     }
@@ -29,4 +29,11 @@ public abstract class ChannelEvent extends IrcEvent {
     public String getChannel() {
         return this.channel;
     }
+
+    @Override
+    public String toString() {
+        return "ChannelEvent [ircbot=" + this.source + "date=" + this.date + "channel=" + this.channel + "]";
+    }
+    
+    
 }

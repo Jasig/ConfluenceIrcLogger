@@ -20,13 +20,24 @@
 package org.jasig.irclog;
 
 /**
+ * Defines the IrcBot APIs that the {@link ChannelLogger} needs access to
+ * 
  * @author Eric Dalquist
  * @version $Revision$
  */
-public interface IrcServer {
+public interface IrcBot {
+    /**
+     * Join the specified channel
+     */
     public void joinChannel(String channel);
     
+    /**
+     * @return The bot's current nick
+     */
     public String getNick();
     
+    /**
+     * Send a notice
+     */
     public void sendNotice(String target, String notice);
 }

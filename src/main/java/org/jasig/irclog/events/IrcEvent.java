@@ -5,9 +5,7 @@
 
 package org.jasig.irclog.events;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jibble.pircbot.PircBot;
+import org.jasig.irclog.IrcBot;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -19,12 +17,18 @@ import org.springframework.context.ApplicationEvent;
 public abstract class IrcEvent extends ApplicationEvent {
     private static final long serialVersionUID = 1L;
 
-    protected final Log logger = LogFactory.getLog(this.getClass());
     protected final long date;
     
-    public IrcEvent(PircBot source) {
+    public IrcEvent(IrcBot source) {
         super(source);
         this.date = System.currentTimeMillis();
+    }
+    
+    /**
+     * @return The IrcBot that this event originates from
+     */
+    public IrcBot getIrcBot() {
+        return (IrcBot)super.getSource();
     }
 
     /**
@@ -33,11 +37,9 @@ public abstract class IrcEvent extends ApplicationEvent {
     public long getDate() {
         return this.date;
     }
-    
-    /**
-     * @return The code to lookup messages with for the event
-     */
-    public final String getEventCode() {
-        return this.getClass().getName();
+
+    @Override
+    public String toString() {
+        return "IrcEvent [ircbot=" + this.source + "date=" + this.date + "]";
     }
 }

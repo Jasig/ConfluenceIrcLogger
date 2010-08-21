@@ -25,9 +25,15 @@ import org.jasig.irclog.events.IrcEvent;
 
 
 /**
+ * Used by a {@link ChannelLogger} to write out the logged events. {@link #write(List)} will be called
+ * periodically with the queued events.
+ * 
  * @author Eric Dalquist
  * @version $Revision$
  */
-public interface WikiUpdater {
-    public void update(List<IrcEvent> events, String spaceKey, List<String> pageNames);
+public interface EventWriter {
+    /**
+     * Write out a List of {@link IrcEvent}s
+     */
+    public void write(List<IrcEvent> events);
 }

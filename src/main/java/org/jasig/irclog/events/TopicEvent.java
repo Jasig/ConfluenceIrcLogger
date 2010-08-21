@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -21,7 +22,7 @@ public class TopicEvent extends ChannelEvent {
     protected final long topicDate;
     protected final boolean changed;
     
-    public TopicEvent(final PircBot source, final String channel, final String topic, final String setBy, final long topicDate, final boolean changed) {
+    public TopicEvent(final IrcBot source, final String channel, final String topic, final String setBy, final long topicDate, final boolean changed) {
         super(source, channel);
         this.topic = topic;
         this.setBy = setBy;
@@ -55,5 +56,11 @@ public class TopicEvent extends ChannelEvent {
      */
     public String getTopic() {
         return this.topic;
+    }
+
+    @Override
+    public String toString() {
+        return "TopicEvent [ircbot=" + this.source + "date=" + this.date + "channel=" + this.channel + "topic=" + 
+                this.topic + ", setBy=" + this.setBy + ", topicDate=" + this.topicDate + ", changed=" + this.changed + "]";
     }
 }

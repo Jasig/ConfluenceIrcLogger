@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -19,7 +20,12 @@ public class DisconnectEvent extends IrcEvent {
     /**
      * @param date
      */
-    public DisconnectEvent(final PircBot source) {
+    public DisconnectEvent(final IrcBot source) {
         super(source);
+    }
+
+    @Override
+    public String toString() {
+        return "DisconnectEvent [ircbot=" + this.source + "date=" + this.date + "]";
     }
 }

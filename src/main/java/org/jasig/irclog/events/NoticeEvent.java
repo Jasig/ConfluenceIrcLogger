@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -21,7 +22,7 @@ public class NoticeEvent extends TargetedEvent {
     protected final String sourceHostname;
     protected final String notice;
 
-    public NoticeEvent(final PircBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String target, final String notice) {
+    public NoticeEvent(final IrcBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String target, final String notice) {
         super(source, target);
         this.sourceNick = sourceNick;
         this.sourceLogin = sourceLogin;
@@ -55,5 +56,12 @@ public class NoticeEvent extends TargetedEvent {
      */
     public String getSourceNick() {
         return this.sourceNick;
+    }
+
+    @Override
+    public String toString() {
+        return "NoticeEvent [ircbot=" + this.source + "date=" + this.date + "target=" + this.target + "sourceNick=" + 
+                this.sourceNick + ", sourceLogin=" + this.sourceLogin + ", sourceHostname=" + this.sourceHostname + 
+                ", notice=" + this.notice + "]";
     }
 }

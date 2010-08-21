@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -21,7 +22,7 @@ public class JoinEvent extends ChannelEvent {
     protected final String hostname;
     
     
-    public JoinEvent(final PircBot source, final String channel, final String sender, final String login, final String hostname) {
+    public JoinEvent(final IrcBot source, final String channel, final String sender, final String login, final String hostname) {
         super(source, channel);
         this.sender = sender;
         this.login = login;
@@ -48,5 +49,11 @@ public class JoinEvent extends ChannelEvent {
      */
     public String getSender() {
         return this.sender;
+    }
+
+    @Override
+    public String toString() {
+        return "JoinEvent [ircbot=" + this.source + "date=" + this.date + "channel=" + this.channel + "sender=" + 
+                this.sender + ", login=" + this.login + ", hostname=" + this.hostname + "]";
     }
 }

@@ -36,6 +36,7 @@ import org.jasig.irclog.events.KickEvent;
 import org.jasig.irclog.events.MessageEvent;
 import org.jasig.irclog.events.ModeEvent;
 import org.jasig.irclog.events.PartEvent;
+import org.jasig.irclog.events.TargetedEvent;
 import org.jasig.irclog.events.TopicEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
@@ -44,6 +45,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.googlecode.shutdownlistener.ShutdownListener;
 
 /**
+ * Handles filtering, logging, queuing and flushing events for a specific IRC channel.
+ * 
  * @author Eric Dalquist
  * @version $Revision$
  */
@@ -53,12 +56,10 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
     private final Queue<IrcEvent> eventQueue = new ConcurrentLinkedQueue<IrcEvent>();
     private volatile long nextFlush = System.currentTimeMillis() + new Random().nextInt((int)TimeUnit.SECONDS.toMillis(30));
     
-    private IrcServer ircServer;
-    private WikiUpdater wikiUpdater;
+    private IrcBot ircBot;
+    private EventWriter eventWriter;
     private String channel;
     private String notification;
-    private String spaceKey;
-    private List<String> pageNames;
     private long flushPeriod = TimeUnit.MINUTES.toMillis(1);
     
     private boolean logJoinEvents = false;
@@ -68,70 +69,94 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
     private boolean logTopicEvents = true;
     
     
-    public void setIrcServer(IrcServer ircServer) {
-        this.ircServer = ircServer;
+    /**
+     * The IrcBot to use for logging the channel.
+     */
+    public void setIrcServer(IrcBot ircBot) {
+        this.ircBot = ircBot;
     }
 
-    public void setWikiUpdater(WikiUpdater wikiUpdater) {
-        this.wikiUpdater = wikiUpdater;
+    /**
+     * The EventWriter to flush queued events to
+     */
+    public void setEventWriter(EventWriter eventWriter) {
+        this.eventWriter = eventWriter;
     }
 
+    /**
+     * The IRC channel to log
+     */
     public void setChannel(String channel) {
         this.channel = channel;
     }
 
+    /**
+     * The notification to send to the channel when joining and to send to any users that join
+     * the channel
+     */
     public void setNotification(String notification) {
         this.notification = notification;
     }
 
-    public void setSpaceKey(String spaceKey) {
-        this.spaceKey = spaceKey;
-    }
-
-    public void setPageNames(List<String> pageNames) {
-        this.pageNames = pageNames;
-    }
-
+    /**
+     * Frequency with which to flush queued events to the EventWriter in milliseconds. Defaults to
+     * 1 Minute, minimum value is 1 Second.
+     */
     public void setFlushPeriod(long flushPeriod) {
-        this.flushPeriod = flushPeriod;
+        this.flushPeriod = Math.min(1000, flushPeriod);
     }
     
+    /**
+     * If {@link JoinEvent}s should be logged.
+     */
     public void setLogJoinEvents(boolean logJoinEvents) {
         this.logJoinEvents = logJoinEvents;
     }
 
+    /**
+     * If {@link KickEvent}s should be logged
+     */
     public void setLogKickEvents(boolean logKickEvents) {
         this.logKickEvents = logKickEvents;
     }
 
+    /**
+     * If {@link ModeEvent}s should be logged
+     */
     public void setLogModeEvents(boolean logModeEvents) {
         this.logModeEvents = logModeEvents;
     }
 
+    /**
+     * If {@link PartEvent}s should be logged
+     */
     public void setLogPartEvents(boolean logPartEvents) {
         this.logPartEvents = logPartEvents;
     }
 
+    /**
+     * If {@link TopicEvent}s should be logged
+     */
     public void setLogTopicEvents(boolean logTopicEvents) {
         this.logTopicEvents = logTopicEvents;
     }
 
     public void onApplicationEvent(IrcEvent event) {
         //Only pay attention to events from the IRC server we're associated with
-        if (!this.ircServer.equals(event.getSource())) {
+        if (!this.ircBot.equals(event.getIrcBot())) {
             return;
         }
         
         //Channel membership management
         if (event instanceof ConnectEvent) {
             this.logger.info("Joining channel: " + channel);
-            this.ircServer.joinChannel(this.channel);
+            this.ircBot.joinChannel(this.channel);
         }
         else if (event instanceof KickEvent) {
             final KickEvent kickEvent = (KickEvent) event;
-            if (this.channel.equals(kickEvent.getChannel()) && this.ircServer.getNick().equalsIgnoreCase(kickEvent.getRecipientNick())) {
+            if (this.channel.equals(kickEvent.getChannel()) && this.ircBot.getNick().equalsIgnoreCase(kickEvent.getRecipientNick())) {
                 this.logger.info("Kicked from channel '" + this.channel + "' attempting to rejoin.");
-                this.ircServer.joinChannel(this.channel);
+                this.ircBot.joinChannel(this.channel);
             }
         }
         
@@ -140,12 +165,12 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
             final JoinEvent joinEvent = (JoinEvent)event;
             final String sender = joinEvent.getSender();
             
-            if (sender.equalsIgnoreCase(this.ircServer.getNick())) {
+            if (sender.equalsIgnoreCase(this.ircBot.getNick())) {
                 final String channel = joinEvent.getChannel();
-                this.ircServer.sendNotice(channel, this.notification);
+                this.ircBot.sendNotice(channel, this.notification);
             }
             else {
-                this.ircServer.sendNotice(sender, this.notification);
+                this.ircBot.sendNotice(sender, this.notification);
             }
         }
         
@@ -169,8 +194,22 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
                 this.eventQueue.offer(event);
             }
         }
+        else if (event instanceof TargetedEvent) {
+            final TargetedEvent targetedEvent = (TargetedEvent)event;
+            
+            if (this.channel.equals(targetedEvent.getTarget())) {
+                if (this.logger.isTraceEnabled()) {
+                    this.logger.trace("Logging event " + event + " for channel " + this.channel);
+                }
+
+                this.eventQueue.offer(event);
+            }
+        }
     }
     
+    /**
+     * Write out any queued events on shutdown
+     */
     @Override
     public void shutdown() {
         this.flushEvents();
@@ -186,6 +225,8 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
      */
     @Scheduled(fixedDelay=1000)
     public void flushEvents() {
+        //If the queue is empty update the nextFlush time, this always waits about the flushPeriod after seeing
+        //a new event before writing them out 
         if (this.eventQueue.isEmpty()) {
             this.nextFlush = System.currentTimeMillis() + this.flushPeriod;
             return;
@@ -194,6 +235,9 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
         if (this.nextFlush > System.currentTimeMillis()) {
             return;
         }
+        
+        //Update nextFlush at the start to prevent concurrent execution if the write takes too long
+        this.nextFlush = System.currentTimeMillis() + this.flushPeriod;
         
         final List<IrcEvent> eventBuffer = new LinkedList<IrcEvent>();
         while (!this.eventQueue.isEmpty()) {
@@ -204,8 +248,10 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("Flushing " + eventBuffer.size() + " events");
         }
-        this.wikiUpdater.update(eventBuffer, spaceKey, pageNames);
+        this.eventWriter.write(eventBuffer);
         
+        
+        //Update nextFlush after everything is done
         this.nextFlush = System.currentTimeMillis() + this.flushPeriod;
     }
 }

@@ -38,11 +38,14 @@ import org.springframework.core.Ordered;
 import com.googlecode.shutdownlistener.ShutdownListener;
 
 /**
+ * Implementation of PircBot that converts all the callbacks into strongly typed event objects.
+ * Also handles automatic reconnecting to the configured server.
+ * 
  * @author Eric Dalquist <a href="mailto:eric.dalquist@doit.wisc.edu">eric.dalquist@doit.wisc.edu</a>
  * @version $Revision$
  */
 public class EventLogBot extends PircBot implements 
-    IrcServer, ShutdownListener, Ordered, ApplicationListener<ContextRefreshedEvent>, ApplicationEventPublisherAware {
+    IrcBot, ShutdownListener, Ordered, ApplicationListener<ContextRefreshedEvent>, ApplicationEventPublisherAware {
     
     protected final Log logger = LogFactory.getLog(this.getClass());
     

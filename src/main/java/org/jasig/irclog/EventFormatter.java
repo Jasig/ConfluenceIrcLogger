@@ -22,11 +22,15 @@ package org.jasig.irclog;
 import org.jasig.irclog.events.IrcEvent;
 
 /**
+ * Formats an {@link IrcEvent} to a String
+ * 
  * @author Eric Dalquist
  * @version $Revision$
  */
 public interface EventFormatter {
 
-    public abstract String formatEvent(IrcEvent event);
-
+    /**
+     * Formats an {@link IrcEvent} to a String.
+     */
+    public String formatEvent(IrcEvent event);
 }

@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -21,7 +22,7 @@ public class QuitEvent extends TargetedEvent {
     protected final String sourceHostname;
     protected final String reason;
     
-    public QuitEvent(final PircBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String reason) {
+    public QuitEvent(final IrcBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String reason) {
         super(source, sourceNick);
         this.sourceNick = sourceNick;
         this.sourceLogin = sourceLogin;
@@ -49,4 +50,12 @@ public class QuitEvent extends TargetedEvent {
     public String getSourceLogin() {
         return this.sourceLogin;
     }
+
+    @Override
+    public String toString() {
+        return "QuitEvent [ircbot=" + this.source + "date=" + this.date + "target=" + this.target + "sourceNick=" + 
+                this.sourceNick + ", sourceLogin=" + this.sourceLogin + ", sourceHostname=" + this.sourceHostname + 
+                ", reason=" + this.reason + "]";
+    }
+    
 }

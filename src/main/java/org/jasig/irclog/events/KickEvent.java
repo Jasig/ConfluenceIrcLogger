@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -22,7 +23,7 @@ public class KickEvent extends ChannelEvent {
     protected final String recipientNick;
     protected final String reason;
     
-    public KickEvent(final PircBot source, final String channel, final String kickerNick, final String kickerLogin, final String kickerHostname, final String recipientNick, final String reason) {
+    public KickEvent(final IrcBot source, final String channel, final String kickerNick, final String kickerLogin, final String kickerHostname, final String recipientNick, final String reason) {
         super(source, channel);
         this.kickerNick = kickerNick;
         this.kickerLogin = kickerLogin;
@@ -65,4 +66,14 @@ public class KickEvent extends ChannelEvent {
     public String getRecipientNick() {
         return this.recipientNick;
     }
+
+    @Override
+    public String toString() {
+        return "KickEvent [ircbot=" + this.source + "date=" + this.date + "channel=" + this.channel + "kickerNick=" + 
+                this.kickerNick + ", kickerLogin=" + this.kickerLogin + ", kickerHostname=" + this.kickerHostname + 
+                ", recipientNick=" + this.recipientNick + ", reason=" + this.reason + "]";
+    }
+    
+    
+    
 }

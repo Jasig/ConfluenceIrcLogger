@@ -27,9 +27,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.irclog.events.IrcEvent;
 import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
+ * Uses {@link SpelExpression}s to format IrcEvents. The SpEL strings are loaded from a properties file where the key
+ * is the corresponding {@link IrcEvent} class name. The SpEL execution context is the event being formatted.
+ * 
  * @author Eric Dalquist
  * @version $Revision$
  */

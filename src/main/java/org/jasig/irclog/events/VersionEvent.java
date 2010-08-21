@@ -5,6 +5,7 @@
 
 package org.jasig.irclog.events;
 
+import org.jasig.irclog.IrcBot;
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -21,7 +22,7 @@ public class VersionEvent extends TargetedEvent {
     protected final String sourceHostname;
     protected final String target;
     
-    public VersionEvent(final PircBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String target) {
+    public VersionEvent(final IrcBot source, final String sourceNick, final String sourceLogin, final String sourceHostname, final String target) {
         super(source, target);
         this.sourceNick = sourceNick;
         this.sourceLogin = sourceLogin;
@@ -48,5 +49,12 @@ public class VersionEvent extends TargetedEvent {
      */
     public String getSourceNick() {
         return this.sourceNick;
+    }
+
+    @Override
+    public String toString() {
+        return "VersionEvent [ircbot=" + this.source + "date=" + this.date + "target=" + this.target + "sourceNick=" + 
+                this.sourceNick + ", sourceLogin=" + this.sourceLogin + ", sourceHostname=" + this.sourceHostname + 
+                ", target=" + this.target + "]";
     }
 }
