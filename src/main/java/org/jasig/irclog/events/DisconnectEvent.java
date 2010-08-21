@@ -14,6 +14,8 @@ import org.jibble.pircbot.PircBot;
  * @version $Revision$
  */
 public class DisconnectEvent extends IrcEvent {
+    private static final long serialVersionUID = 1L;
+
     /**
      * @param date
      */

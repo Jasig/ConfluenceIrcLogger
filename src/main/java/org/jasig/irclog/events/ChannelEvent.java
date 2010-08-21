@@ -5,11 +5,6 @@
 
 package org.jasig.irclog.events;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -19,7 +14,7 @@ import org.jibble.pircbot.PircBot;
  * @version $Revision$
  */
 public abstract class ChannelEvent extends IrcEvent {
-    private static final List<String> PROPERTIES = Collections.unmodifiableList(Arrays.asList(new String[] { "channel" }));
+    private static final long serialVersionUID = 1L;
     
     protected final String channel;
     
@@ -33,19 +28,5 @@ public abstract class ChannelEvent extends IrcEvent {
      */
     public String getChannel() {
         return this.channel;
-    }
-
-    /**
-     * @see org.jasig.irclog.events.IrcEvent#getArgumentProperties()
-     */
-    @Override
-    protected List<String> getArgumentProperties() {
-        final List<String> parentProps = super.getArgumentProperties();
-        final List<String> props = new ArrayList<String>(PROPERTIES.size() + parentProps.size());
-        
-        props.addAll(parentProps);
-        props.addAll(PROPERTIES);
-        
-        return props;
     }
 }

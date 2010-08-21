@@ -5,12 +5,6 @@
 
 package org.jasig.irclog.events;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.jibble.pircbot.PircBot;
 
 /**
@@ -20,33 +14,19 @@ import org.jibble.pircbot.PircBot;
  * @version $Revision$
  */
 public class TopicEvent extends ChannelEvent {
-    private static final List<String> PROPERTIES = Collections.unmodifiableList(Arrays.asList(new String[] { "topic", "setBy", "topicDate", "changed" }));
+    private static final long serialVersionUID = 1L;
     
     protected final String topic;
     protected final String setBy;
-    protected final Date topicDate;
+    protected final long topicDate;
     protected final boolean changed;
     
     public TopicEvent(final PircBot source, final String channel, final String topic, final String setBy, final long topicDate, final boolean changed) {
         super(source, channel);
         this.topic = topic;
         this.setBy = setBy;
-        this.topicDate = new Date(topicDate);
+        this.topicDate = topicDate;
         this.changed = changed;
-    }
-
-    /**
-     * @see org.jasig.irclog.events.IrcEvent#getArgumentProperties()
-     */
-    @Override
-    protected List<String> getArgumentProperties() {
-        final List<String> parentProps = super.getArgumentProperties();
-        final List<String> props = new ArrayList<String>(PROPERTIES.size() + parentProps.size());
-        
-        props.addAll(parentProps);
-        props.addAll(PROPERTIES);
-        
-        return props;
     }
 
     /**
@@ -66,7 +46,7 @@ public class TopicEvent extends ChannelEvent {
     /**
      * @return the topicDate
      */
-    public Date getTopicDate() {
+    public long getTopicDate() {
         return this.topicDate;
     }
 

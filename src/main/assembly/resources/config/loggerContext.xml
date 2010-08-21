@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+>
+    <bean id="exampleIrcBot" class="org.jasig.irclog.EventLogBot">
+        <property name="host" value="irc.example.com" />
+        <property name="port" value="6667" />
+        <property name="password" value="optionalServerPassword" />
+        <property name="botName" value="IrcLogBot" />
+
+        <property name="autoNickChange" value="true" />
+    </bean>
+    
+    <bean id="exampleWiki" class="org.jasig.irclog.ConfluenceUpdater">
+        <property name="eventFormatter" ref="confluenceFormatter" />
+        
+        <property name="rpcEndpoint" value="https://wiki.example.com/rpc/xmlrpc"/>
+        <property name="username" value="confluenceAccount"/>
+        <property name="password" value="confluencePassword"/>        
+    </bean>
+
+    <bean id="freenodeuPortal" class="org.jasig.irclog.ChannelLogger">
+        <property name="ircServer" ref="exampleIrcBot" />
+        <property name="wikiUpdater" ref="exampleWiki" />
+        
+        <property name="channel" value="#example" />
+        <property name="notification" value="#example is being logged to: https://wiki.example.com/display/UPC/Example+IRC+Logs" />
+        <property name="spaceKey" value="UPC" />
+        <property name="pageNames">
+            <list>
+                <value>'Example IRC Logs'</value>
+                <value>'Example IRC Logs-'yyyy</value>
+                <value>'Example IRC Logs-'yyyy-MM</value>
+                <value>'Example IRC Logs-'yyyy-MM-dd</value>
+            </list>
+        </property>
+    </bean>
+</beans>
