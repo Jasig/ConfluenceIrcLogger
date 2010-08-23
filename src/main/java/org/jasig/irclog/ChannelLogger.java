@@ -19,10 +19,14 @@
 
 package org.jasig.irclog;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -33,11 +37,9 @@ import org.jasig.irclog.events.ConnectEvent;
 import org.jasig.irclog.events.IrcEvent;
 import org.jasig.irclog.events.JoinEvent;
 import org.jasig.irclog.events.KickEvent;
-import org.jasig.irclog.events.MessageEvent;
 import org.jasig.irclog.events.ModeEvent;
 import org.jasig.irclog.events.PartEvent;
 import org.jasig.irclog.events.TargetedEvent;
-import org.jasig.irclog.events.TopicEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -57,17 +59,18 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
     private volatile long nextFlush = System.currentTimeMillis() + new Random().nextInt((int)TimeUnit.SECONDS.toMillis(30));
     
     private IrcBot ircBot;
-    private EventWriter eventWriter;
+    private Collection<EventWriter> eventWriters;
     private String channel;
     private String notification;
     private long flushPeriod = TimeUnit.MINUTES.toMillis(1);
-    
-    private boolean logJoinEvents = false;
-    private boolean logKickEvents = false;
-    private boolean logModeEvents = false;
-    private boolean logPartEvents = false;
-    private boolean logTopicEvents = true;
-    
+    private Set<Class<? extends IrcEvent>> ignoredEvents = new LinkedHashSet<Class<? extends IrcEvent>>() {
+    {
+        add(JoinEvent.class);
+        add(KickEvent.class);
+        add(ModeEvent.class);
+        add(PartEvent.class);
+    }};
+    private boolean logNonTargetedEvents = false;
     
     /**
      * The IrcBot to use for logging the channel.
@@ -77,10 +80,10 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
     }
 
     /**
-     * The EventWriter to flush queued events to
+     * The EventWriters to flush queued events to
      */
-    public void setEventWriter(EventWriter eventWriter) {
-        this.eventWriter = eventWriter;
+    public void setEventWriters(Collection<EventWriter> eventWriters) {
+        this.eventWriters = eventWriters;
     }
 
     /**
@@ -107,38 +110,27 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
     }
     
     /**
-     * If {@link JoinEvent}s should be logged.
+     * Set {@link IrcEvent} classes that should not be logged. By default {@link JoinEvent}, {@link KickEvent}
+     * {@link PartEvent}, and {@link ModeEvent} are ignored. Providing any Set here overrides these defaults.
      */
-    public void setLogJoinEvents(boolean logJoinEvents) {
-        this.logJoinEvents = logJoinEvents;
+    public void setIgnoredEvents(Set<Class<? extends IrcEvent>> ignoredEvents) {
+        if (ignoredEvents == null) {
+            this.ignoredEvents = Collections.emptySet();
+        }
+        else {
+            this.ignoredEvents = ignoredEvents;
+        }
     }
-
+    
     /**
-     * If {@link KickEvent}s should be logged
+     * If events other than {@link ChannelEvent} and {@link TargetedEvent} that target the configured channel
+     * should be logged. Defaults to false.
+     * 
+     * WARNING, if you set this to true all events the {@link IrcBot} recieves will be logged unless it is listed
+     * in {{@link #setIgnoredEvents(Set)} 
      */
-    public void setLogKickEvents(boolean logKickEvents) {
-        this.logKickEvents = logKickEvents;
-    }
-
-    /**
-     * If {@link ModeEvent}s should be logged
-     */
-    public void setLogModeEvents(boolean logModeEvents) {
-        this.logModeEvents = logModeEvents;
-    }
-
-    /**
-     * If {@link PartEvent}s should be logged
-     */
-    public void setLogPartEvents(boolean logPartEvents) {
-        this.logPartEvents = logPartEvents;
-    }
-
-    /**
-     * If {@link TopicEvent}s should be logged
-     */
-    public void setLogTopicEvents(boolean logTopicEvents) {
-        this.logTopicEvents = logTopicEvents;
+    public void setLogNonTargetedEvents(boolean logNonTargetedEvents) {
+        this.logNonTargetedEvents = logNonTargetedEvents;
     }
 
     public void onApplicationEvent(IrcEvent event) {
@@ -174,36 +166,26 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
             }
         }
         
-        //Event logging, only targeted events are 
-        if (event instanceof ChannelEvent) {
-            final ChannelEvent channelEvent = (ChannelEvent)event;
-            
-            //Only pay attention to events targeting this channel
-            if (this.channel.equals(channelEvent.getChannel()) &&
-                    (channelEvent instanceof MessageEvent ||
-                    (this.logJoinEvents && channelEvent instanceof JoinEvent) ||
-                    (this.logKickEvents && channelEvent instanceof KickEvent) ||
-                    (this.logModeEvents && channelEvent instanceof ModeEvent) ||
-                    (this.logPartEvents && channelEvent instanceof PartEvent) ||
-                    (this.logTopicEvents && channelEvent instanceof TopicEvent))) {
-                
-                if (this.logger.isTraceEnabled()) {
-                    this.logger.trace("Logging event " + event + " for channel " + this.channel);
-                }
-
-                this.eventQueue.offer(event);
+        //Check if the log message is ignored
+        if (this.ignoredEvents.contains(event.getClass())) {
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace("Ignoring event " + event + ". It is in the IgnoredEvents Set");
             }
+            
+            return;
         }
-        else if (event instanceof TargetedEvent) {
-            final TargetedEvent targetedEvent = (TargetedEvent)event;
+        
+        //Event logging, only targeted events are logged
+        if (    this.logNonTargetedEvents ||
+                (event instanceof ChannelEvent && this.channel.equals(((ChannelEvent)event).getChannel())) ||
+                (event instanceof TargetedEvent && this.channel.equals(((TargetedEvent)event).getTarget()))
+           ) {
             
-            if (this.channel.equals(targetedEvent.getTarget())) {
-                if (this.logger.isTraceEnabled()) {
-                    this.logger.trace("Logging event " + event + " for channel " + this.channel);
-                }
-
-                this.eventQueue.offer(event);
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace("Logging event " + event + " for channel " + this.channel);
             }
+
+            this.eventQueue.offer(event);
         }
     }
     
@@ -248,7 +230,10 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("Flushing " + eventBuffer.size() + " events");
         }
-        this.eventWriter.write(eventBuffer);
+        
+        for (final EventWriter eventWriter : this.eventWriters) { 
+            eventWriter.write(eventBuffer);
+        }
         
         
         //Update nextFlush after everything is done

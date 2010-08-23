@@ -9,6 +9,9 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd"
 >
+    <!-- 
+     | A bot to connect to an IRC server.
+     +-->
     <bean id="exampleIrcBot" class="org.jasig.irclog.EventLogBot">
         <property name="host" value="irc.example.com" />
         <property name="port" value="6667" />
@@ -18,18 +21,26 @@
         <property name="autoNickChange" value="true" />
     </bean>
     
-    <bean id="exampleWikiServer" class="org.jasig.irclog.XmlRpcConfluenceServer">
+    <!-- 
+     | A Confluence Server that can be used by a ConfluenceEventWriter to write data
+     +-->
+    <bean id="exampleConfluenceServer" class="org.jasig.irclog.XmlRpcConfluenceServer">
         <property name="rpcEndpoint" value="https://wiki.example.com/rpc/xmlrpc"/>
         <property name="username" value="confluenceAccount"/>
         <property name="password" value="confluencePassword"/>        
     </bean>
     
-    
-    <bean id="exampleWikiWriter" class="org.jasig.irclog.ConfluenceEventWriter">
-        <!-- The 'confluenceFormatter' bean is defined as part of the main log bot application context -->
+    <!-- 
+     | An EventWriter that formats events using the specified EventFormatter then writes them
+     | out to via the specified ConfluenceServer into the specified page structure.
+     +-->
+    <bean id="exampleConfluenceWriter" class="org.jasig.irclog.ConfluenceEventWriter">
+        <!--
+         | The 'confluenceFormatter' bean is defined as part of the main log bot application context
+         +-->
         <property name="eventFormatter" ref="confluenceFormatter" />
         
-        <property name="confluenceServer" value="exampleWikiServer"/>
+        <property name="confluenceServer" value="exampleConfluenceServer"/>
         <property name="spaceKey" value="EX" />
         <property name="pageNames">
             <list>
@@ -41,9 +52,13 @@
         </property>        
     </bean>
 
+    <!-- 
+     | Ties an IrcBot to a set of EventWriters for logging a specific channel. Manages joining/rejoining a channel
+     | as well as announcing to the channel that is is being logged.
+     +-->
     <bean id="exampleChannelLogger" class="org.jasig.irclog.ChannelLogger">
         <property name="ircServer" ref="exampleIrcBot" />
-        <property name="wikiUpdater" ref="exampleWiki" />
+        <property name="eventWriters" ref="exampleConfluenceWriter" />
         
         <property name="channel" value="#example" />
         <property name="notification" value="#example is being logged to: https://wiki.example.com/display/UPC/Example+IRC+Logs" />

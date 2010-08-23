@@ -33,7 +33,6 @@ import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jasig.irclog.events.IrcEvent;
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * EventWriter writes to a Confluence server after doing some confluence specific message escaping. Uses a configured
@@ -98,7 +97,6 @@ public class ConfluenceEventWriter implements EventWriter {
         }
     }
     
-    @Async
     @Override
     public void write(List<IrcEvent> events) {
         final List<PageHolder> pageHolders = new ArrayList<PageHolder>(this.pageNames.size());

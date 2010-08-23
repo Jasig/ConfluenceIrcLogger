@@ -22,6 +22,7 @@ package org.jasig.irclog;
 import java.util.List;
 
 import org.jasig.irclog.events.IrcEvent;
+import org.springframework.scheduling.annotation.Async;
 
 
 /**
@@ -35,5 +36,6 @@ public interface EventWriter {
     /**
      * Write out a List of {@link IrcEvent}s
      */
+    @Async
     public void write(List<IrcEvent> events);
 }
