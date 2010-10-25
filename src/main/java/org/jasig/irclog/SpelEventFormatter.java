@@ -70,6 +70,7 @@ public class SpelEventFormatter implements EventFormatter {
     /* (non-Javadoc)
      * @see org.jasig.irclog.EventFormatter#formatEvent(org.jasig.irclog.events.IrcEvent)
      */
+    @Override
     public String formatEvent(IrcEvent event) {
         final Expression expression = this.formatExpressions.get(event.getClass());
         if (expression == null) {

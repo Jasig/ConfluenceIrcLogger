@@ -80,6 +80,7 @@ public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServe
     /* (non-Javadoc)
      * @see org.jasig.irclog.ConfluenceServer#login()
      */
+    @Override
     public String login() {
         return this.call("login", this.username, this.password);
     }
@@ -87,6 +88,7 @@ public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServe
     /* (non-Javadoc)
      * @see org.jasig.irclog.ConfluenceServer#logout(java.lang.String)
      */
+    @Override
     public void logout(String token) {
         this.call("logout", token);
     }
@@ -94,6 +96,7 @@ public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServe
     /* (non-Javadoc)
      * @see org.jasig.irclog.ConfluenceServer#getPage(java.lang.String, java.lang.String, java.lang.String)
      */
+    @Override
     public Map<String, Object> getPage(String token, String spaceKey, String title) {
         return this.call("getPage", token, spaceKey, title);
     }
@@ -101,6 +104,7 @@ public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServe
     /* (non-Javadoc)
      * @see org.jasig.irclog.ConfluenceServer#storePage(java.lang.String, java.util.Map)
      */
+    @Override
     public Map<String, Object> storePage(String token, Map<String, Object> page) {
         return this.call("storePage", token, page);
     }
@@ -108,6 +112,7 @@ public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServe
     /* (non-Javadoc)
      * @see org.jasig.irclog.ConfluenceServer#updatePage(java.lang.String, java.util.Map, java.util.Map)
      */
+    @Override
     public Map<String, Object> updatePage(String token, Map<String, Object> page, Map<String, Object> updateOptions) {
         return this.call("updatePage", token, page, updateOptions);
     }

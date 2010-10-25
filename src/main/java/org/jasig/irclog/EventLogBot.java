@@ -101,10 +101,12 @@ public class EventLogBot extends PircBot implements
         this.reconnectDelay = reconnectDelay;
     }
 
+    @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         this.logger.debug(event);
         this.logger.debug("Connecting to " + host + ":" + port);
@@ -125,6 +127,7 @@ public class EventLogBot extends PircBot implements
         //TODO on connect error setup retry?
     }
 
+    @Override
     public void shutdown() {
         this.logger.debug("Shutting Down EventLogBot for " + host + ":" + port);
         this.quit = true;
@@ -165,12 +168,16 @@ public class EventLogBot extends PircBot implements
      */
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (sourceNick.equalsIgnoreCase(this.getNick()) || sourceNick.equalsIgnoreCase(this.getName())) {
-            this.logger.info("Quit server, will not attempt to reconnect.");
-            this.quit = true;
+        final QuitEvent event = new QuitEvent(this, sourceNick, sourceLogin, sourceHostname, reason);
+        
+        if (!this.quit && (sourceNick.equalsIgnoreCase(this.getNick()) || sourceNick.equalsIgnoreCase(this.getName()))) {
+            this.logger.info("Quit server for unknown reason, try to reconnect: " + event);
+            this.safeReconnect();
+        }
+        else {
+            this.logger.info("Quit server due to shutdown, will not attempt to reconnect: " + event);
         }
         
-        final QuitEvent event = new QuitEvent(this, sourceNick, sourceLogin, sourceHostname, reason);
         this.applicationEventPublisher.publishEvent(event);
     }
     
@@ -182,6 +189,10 @@ public class EventLogBot extends PircBot implements
         final DisconnectEvent event = new DisconnectEvent(this);
         this.applicationEventPublisher.publishEvent(event);
         
+        this.safeReconnect();
+    }
+
+    protected void safeReconnect() {
         while (!this.quit && !this.isConnected()) {
             try {
                 this.logger.info("Attempting to reconnect to server.");

@@ -133,6 +133,7 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
         this.logNonTargetedEvents = logNonTargetedEvents;
     }
 
+    @Override
     public void onApplicationEvent(IrcEvent event) {
         //Only pay attention to events from the IRC server we're associated with
         if (!this.ircBot.equals(event.getIrcBot())) {
@@ -152,17 +153,20 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
             }
         }
         
-        //Send the notification if one is set and a JoinEvent happens
+        //Send the notification if one is set and a JoinEvent happens for this channel
         if (this.notification != null && event instanceof JoinEvent) {
             final JoinEvent joinEvent = (JoinEvent)event;
-            final String sender = joinEvent.getSender();
             
-            if (sender.equalsIgnoreCase(this.ircBot.getNick())) {
-                final String channel = joinEvent.getChannel();
-                this.ircBot.sendNotice(channel, this.notification);
-            }
-            else {
-                this.ircBot.sendNotice(sender, this.notification);
+            if (this.channel.equals(joinEvent.getChannel())) {
+                final String sender = joinEvent.getSender();
+                
+                if (sender.equalsIgnoreCase(this.ircBot.getNick())) {
+                    final String channel = joinEvent.getChannel();
+                    this.ircBot.sendNotice(channel, this.notification);
+                }
+                else {
+                    this.ircBot.sendNotice(sender, this.notification);
+                }
             }
         }
         
