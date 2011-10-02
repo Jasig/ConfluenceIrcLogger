@@ -29,8 +29,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.irclog.events.ChannelEvent;
 import org.jasig.irclog.events.ConnectEvent;
 import org.jasig.irclog.events.IrcEvent;
@@ -39,6 +37,8 @@ import org.jasig.irclog.events.KickEvent;
 import org.jasig.irclog.events.ModeEvent;
 import org.jasig.irclog.events.PartEvent;
 import org.jasig.irclog.events.TargetedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -53,7 +53,7 @@ import com.googlecode.shutdownlistener.ShutdownListener;
  * @version $Revision$
  */
 public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownListener, Ordered {
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     private final Queue<IrcEvent> eventQueue = new ConcurrentLinkedQueue<IrcEvent>();
     private volatile long nextFlush = System.currentTimeMillis() + new Random().nextInt((int)TimeUnit.SECONDS.toMillis(30));

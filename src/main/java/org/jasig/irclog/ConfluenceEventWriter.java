@@ -21,7 +21,6 @@ package org.jasig.irclog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -30,9 +29,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.time.FastDateFormat;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.irclog.events.IrcEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * EventWriter writes to a Confluence server after doing some confluence specific message escaping. Uses a configured
@@ -43,18 +44,17 @@ import org.jasig.irclog.events.IrcEvent;
  * @version $Revision$
  */
 public class ConfluenceEventWriter implements EventWriter {
-    @SuppressWarnings("serial")
-    private static final Map<Pattern, String> MESSAGE_ESCAPING = Collections.unmodifiableMap(new LinkedHashMap<Pattern, String>() { {
-        this.put(Pattern.compile(Pattern.quote("&")), "&amp;");
-        this.put(Pattern.compile(Pattern.quote("<")), "&lt;");
-        this.put(Pattern.compile(Pattern.quote(">")), "&gt;");
-        this.put(Pattern.compile(Pattern.quote("\"")), "&#034;");
-        this.put(Pattern.compile(Pattern.quote("'")), "&#039;");
-        this.put(Pattern.compile(Pattern.quote("[")), "\\\\[");
-        this.put(Pattern.compile(Pattern.quote("]")), "\\\\]");
-    }});
+    private static final Map<Pattern, String> MESSAGE_ESCAPING = ImmutableMap.<Pattern, String>builder()
+        .put(Pattern.compile(Pattern.quote("&")), "&amp;")
+        .put(Pattern.compile(Pattern.quote("<")), "&lt;")
+        .put(Pattern.compile(Pattern.quote(">")), "&gt;")
+        .put(Pattern.compile(Pattern.quote("\"")), "&#034;")
+        .put(Pattern.compile(Pattern.quote("'")), "&#039;")
+        .put(Pattern.compile(Pattern.quote("[")), "\\\\[")
+        .put(Pattern.compile(Pattern.quote("]")), "\\\\]")
+        .build();
     
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     private ConfluenceServer<Object> confluenceServer;
     private EventFormatter eventFormatter;

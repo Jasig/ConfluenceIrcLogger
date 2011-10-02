@@ -7,8 +7,6 @@ package org.jasig.irclog;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.irclog.events.ActionEvent;
 import org.jasig.irclog.events.ConnectEvent;
 import org.jasig.irclog.events.DisconnectEvent;
@@ -29,6 +27,8 @@ import org.jibble.pircbot.Colors;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
@@ -47,7 +47,7 @@ import com.googlecode.shutdownlistener.ShutdownListener;
 public class EventLogBot extends PircBot implements 
     IrcBot, ShutdownListener, Ordered, ApplicationListener<ContextRefreshedEvent>, ApplicationEventPublisherAware {
     
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     private volatile boolean quit = false;
 
@@ -108,20 +108,20 @@ public class EventLogBot extends PircBot implements
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        this.logger.debug(event);
+        this.logger.debug("{}", event);
         this.logger.debug("Connecting to " + host + ":" + port);
         
         try {
             this.connect(host, port, password);
         }
         catch (NickAlreadyInUseException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         catch (IOException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         catch (IrcException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         
         //TODO on connect error setup retry?

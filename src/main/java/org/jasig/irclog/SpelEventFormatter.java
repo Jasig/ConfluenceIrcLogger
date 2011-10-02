@@ -23,9 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jasig.irclog.events.IrcEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -41,7 +41,7 @@ public class SpelEventFormatter implements EventFormatter {
     private final Map<Class<IrcEvent>, Expression> formatExpressions = new LinkedHashMap<Class<IrcEvent>, Expression>();
     private final SpelExpressionParser expressionParser = new SpelExpressionParser();
     
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @SuppressWarnings("unchecked")
     public void setFormatExpressions(Properties expressions) {
