@@ -36,7 +36,7 @@ public class XmlRpcConfluence4ServerTest {
         final XmlRpcConfluence4Server confluenceServer = new XmlRpcConfluence4Server();
         confluenceServer.setRpcEndpoint("https://wiki.jasig.org/rpc/xmlrpc");
         confluenceServer.setUsername("irclogbot");
-        confluenceServer.setPassword("");
+        confluenceServer.setPassword("irclog4jasig@uw");
         confluenceServer.afterPropertiesSet();
         
         return confluenceServer;
@@ -63,7 +63,7 @@ public class XmlRpcConfluence4ServerTest {
             
             
             String message = "[" + new java.text.SimpleDateFormat("HH:mm:ss z(Z)").format(new java.util.Date()) + 
-                    "] {color:black} <" + "EricDalquist" + "> " + "testing" + "{color}\n";
+                    "] {color:black} <" + "EricDalquist" + "> " + "testing" + "{color}\n{children:depth=1}\n";
             message = confluenceServer.convertWikiToStorageFormat(token, message);
             page.put("content", content + message);
             

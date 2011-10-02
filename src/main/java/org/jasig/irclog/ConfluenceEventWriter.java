@@ -188,7 +188,8 @@ public class ConfluenceEventWriter implements EventWriter {
         
         // This page has children, child link link macro
         if (hasChild) {
-            page.put("content", "{children:depth=1}");
+            final String content = this.confluenceServer.convertWikiToStorageFormat(token, "{children:depth=1}");
+            page.put("content", content);
         }
         
         return this.confluenceServer.storePage(token, page);
