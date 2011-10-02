@@ -38,7 +38,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author  Eric Dalquist
  * @version  $Revision$
  */
-public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServer<String> {
+public class XmlRpcConfluence4Server implements InitializingBean, ConfluenceServer<String> {
     protected final Log logger = LogFactory.getLog(this.getClass());
     
     private XmlRpcClient client;
@@ -117,20 +117,18 @@ public class XmlRpcConfluenceServer implements InitializingBean, ConfluenceServe
         return this.call("updatePage", token, page, updateOptions);
     }
     
-    /* (non-Javadoc)
-     * @see org.jasig.irclog.ConfluenceServer#convertWikiToStorageFormat(java.lang.String, java.lang.String)
-     */
     @Override
     public String convertWikiToStorageFormat(String token, String message) {
-        return message;
+        return this.call("convertWikiToStorageFormat", token, message);
     }
+
     
     @SuppressWarnings("unchecked")
     private <T> T call(String method, Object... args) {
         final List<Object> argList = Arrays.asList(args);
         try {
             this.logger.trace("Calling " + method + " on " + this.rpcEndpoint + " with " + argList);
-            return (T)this.client.execute("confluence1." + method, new Vector<Object>(argList));
+            return (T)this.client.execute("confluence2." + method, new Vector<Object>(argList));
         }
         catch (XmlRpcException e) {
             //Check for page not existing exception and return null

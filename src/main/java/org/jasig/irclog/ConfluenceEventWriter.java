@@ -124,6 +124,7 @@ public class ConfluenceEventWriter implements EventWriter {
                     final String replacement = patternEntry.getValue();
                     message = pattern.matcher(message).replaceAll(replacement);
                 }
+                message = this.confluenceServer.convertWikiToStorageFormat(token, message + "\n");
                 page.put("content", content + message + "\n");
                 
                 //Track the pages that have been modified to minimize updates

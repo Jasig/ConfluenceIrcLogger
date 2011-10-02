@@ -5,8 +5,8 @@
  */
 package org.jasig.irclog;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Log4jConfigurer;
@@ -20,7 +20,7 @@ import com.googlecode.shutdownlistener.ShutdownHandler;
  * @version $Revision$
  */
 public class BotRunner {
-    private static final Log LOG = LogFactory.getLog(BotRunner.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BotRunner.class);
     
     public static void main(String[] args) throws Exception {
         Log4jConfigurer.initLogging("classpath:log4j.properties", 10000);

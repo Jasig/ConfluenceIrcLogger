@@ -21,7 +21,6 @@ package org.jasig.irclog;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -44,6 +43,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.google.common.collect.Sets;
 import com.googlecode.shutdownlistener.ShutdownListener;
 
 /**
@@ -63,13 +63,13 @@ public class ChannelLogger implements ApplicationListener<IrcEvent>, ShutdownLis
     private String channel;
     private String notification;
     private long flushPeriod = TimeUnit.MINUTES.toMillis(1);
-    private Set<Class<? extends IrcEvent>> ignoredEvents = new LinkedHashSet<Class<? extends IrcEvent>>() {
-    {
-        add(JoinEvent.class);
-        add(KickEvent.class);
-        add(ModeEvent.class);
-        add(PartEvent.class);
-    }};
+    @SuppressWarnings("unchecked")
+    private Set<Class<? extends IrcEvent>> ignoredEvents = Sets.<Class<? extends IrcEvent>>newHashSet(
+            JoinEvent.class, 
+            KickEvent.class,
+            ModeEvent.class,
+            PartEvent.class);
+            
     private boolean logNonTargetedEvents = false;
     
     /**

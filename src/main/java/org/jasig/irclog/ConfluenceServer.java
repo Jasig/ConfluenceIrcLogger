@@ -55,4 +55,9 @@ public interface ConfluenceServer<T> {
      * Updates a page, returning the server's new view of the page
      */
     public Map<String, Object> updatePage(T token, Map<String, Object> page, Map<String, Object> updateOptions);
+    
+    /**
+     * Convert the wiki markup to the correct storage format
+     */
+    public String convertWikiToStorageFormat(T token, String message);
 }

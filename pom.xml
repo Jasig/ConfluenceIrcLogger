@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jasig.parent</groupId>
         <artifactId>jasig-parent</artifactId>
-        <version>21</version>
+        <version>32</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -14,10 +14,10 @@
 
     <name>Confluence IRC Logger</name>
     <description>Logs IRC conversations into Confluence.</description>
-    <url>http://developer.ja-sig.org/projects/ConfluenceIrcLogger/</url>
+    <url>http://developer.jasig.org/projects/ConfluenceIrcLogger/${project.version}</url>
 
     <issueManagement>
-        <url>http://www.ja-sig.org/issues/browse/CFIRCL</url>
+        <url>https://issues.jasig.org/browse/CFIRCL</url>
         <system>Jira</system>
     </issueManagement>
 
@@ -26,26 +26,11 @@
         <developerConnection>scm:svn:https://source.jasig.org/sandbox/ConfluenceIrcLogger/trunk</developerConnection>
         <url>https://developer.jasig.org/source/browse/jasigsvn/sandbox/ConfluenceIrcLogger/trunk</url>
     </scm>
-
-    <developers>
-        <developer>
-            <name>Eric Dalquist</name>
-            <id>edalquist</id>
-            <email>eric.dalquist@doit.wisc.edu</email>
-            <organization>UW - Madison</organization>
-            <roles>
-                <role>Project Admin</role>
-                <role>Developer</role>
-            </roles>
-            <url>http://www.ja-sig.org/wiki/display/~edalquist</url>
-            <timezone>-6</timezone>
-        </developer>
-    </developers>
     
     <repositories>
         <repository>
-            <id>jasig-3rd-party</id>
-            <url>http://developer.jasig.org/repo/content/repositories/3rd-party</url>
+            <id>atlassian-contrib</id>
+            <url>https://maven.atlassian.com/content/repositories/atlassian-contrib/</url>
         </repository>
     </repositories>
 
@@ -59,17 +44,12 @@
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.1.1</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.2</version>
+                <version>4.10</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
@@ -79,42 +59,42 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.2</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-jcl</artifactId>
-                <version>1.6.1</version>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>1.6.2</version>
             </dependency>
             <dependency>
                 <groupId>pircbot</groupId>
                 <artifactId>pircbot</artifactId>
-                <version>1.4.6</version>
+                <version>1.5.0</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>3.0.5.RELEASE</version>
+                <version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
             	<groupId>org.springframework</groupId>
             	<artifactId>spring-core</artifactId>
-            	<version>3.0.5.RELEASE</version>
+            	<version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>3.0.5.RELEASE</version>
+                <version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-expression</artifactId>
-                <version>3.0.5.RELEASE</version>
+                <version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>3.0.5.RELEASE</version>
+                <version>3.0.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlrpc</groupId>
@@ -138,10 +118,19 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>10.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.googlecode.shutdown-listener</groupId>
             <artifactId>shutdown-listener</artifactId>
@@ -151,16 +140,18 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -191,7 +182,7 @@
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jcl</artifactId>
+            <artifactId>jcl-over-slf4j</artifactId>
             <scope>runtime</scope>
         </dependency>
         
@@ -221,7 +212,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
